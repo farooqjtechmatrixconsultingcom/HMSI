@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	    <sub-flow name="sub_Flow" doc:id="2598615b-2721-47a4-ba80-e83f6fe89b8b">
+        <http:request method="POST" doc:name="tokenAPI Request" doc:id="e1bf601a-de3e-4e8f-a4c4-11c20585de82" config-ref="HTTP_Request_configuration1" path="/api/token" target="hmsiToken" />
+        <logger level="INFO" doc:name="Logger" doc:id="ed886537-2fd4-407a-aa9a-3e8148439053" message="#[vars.hmsiToken]" />
+        <java:new doc:name="New" doc:id="ca9b40f7-b034-4445-a09f-4b2b999d97f6" class="hmsijavacode" constructor="hmsijavacode()" target="encryptedText" />
+		<java:invoke-static doc:name="Invoke static" doc:id="1fc043e4-e4c0-442d-a9dd-2043791b428e" class="hmsijavacode" method="encrypt(java.lang.String,java.lang.String,java.lang.String)" target="encryptedPayload">
+            <java:args><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+data : payload,
+secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
+iv: "1LLCyESRssvXXiX1"
+
+}]]]></java:args>
+        </java:invoke-static>
+        <logger level="INFO" doc:name="Logger" doc:id="6ca11f29-0a21-452e-aa00-c03e93e359e1" message="#[vars.encryptedPayload]" />
+        <http:request method="POST" doc:name="Get EBC Limit Request" doc:id="a017de5f-6354-43bf-85a6-c78b8206f5ad" config-ref="HTTP_Request_configuration" path="/sfdc-inbound/inbound" target="encryptedPayload">
+            <http:body><![CDATA[#[vars.encryptedPayload]]]></http:body>
+            <http:headers><![CDATA[#[output application/java
+---
+{
+	"source" : "hondatw",
+	"correlationId" : "71bc-c4e5-6017-9d55-7d5172",
+	"environment" : "VHUAT",
+	"Content-Type" : "application/octet-stream",
+	"svc_name" : "getEBCLimit",
+	"authorization" : "Bearer " ++ (vars.hmsiToken.access_token)
+}]]]></http:headers>
+        </http:request>
+        <java:new doc:name="New" doc:id="88a86d5b-703c-4686-81a9-6c22c0071230" class="decodepayload" constructor="decodepayload()" />
+        <java:invoke-static doc:name="Invoke static Decrypt" doc:id="957a0499-4ffd-4d82-8c0a-53a222b22ee5" class="decodepayload" method="decrypt(java.lang.String,java.lang.String,java.lang.String)" target="decryptedpayload">
+            <java:args><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+encryptedData : vars.encryptedPayload,
+secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
+iv: "1LLCyESRssvXXiX1"
+
+}]]]></java:args>
+        </java:invoke-static>
+        <logger level="INFO" doc:name="Logger" doc:id="ef9327ee-9a79-47bc-9fc4-ce703dc7405a" message="#[payload]" />
+		<ee:transform doc:name="Transform Message" doc:id="75f14e7c-7994-4c39-811f-accd6ab44e57" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+read(vars.decryptedpayload, "application/json")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </sub-flow>
+	
+	</mule>

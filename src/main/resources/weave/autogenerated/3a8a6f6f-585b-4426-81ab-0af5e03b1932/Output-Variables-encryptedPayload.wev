@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_3a8a6f6f_585b_4426_81ab_0af5e03b1932_Output_Variables_encryptedPayload = Any
+
