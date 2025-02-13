@@ -1,0 +1,7 @@
+{
+            "transaction_id": "8658e3d0-386b-11ea-9b7c-c0b8835813bc",
+            "statusCode": 400,
+            "statusType": "Bad request",
+           "statusMessage": "Something went very wrong. Please try again."
+} 
+

@@ -1,0 +1,6 @@
+{
+  "statusCode": 401,
+  "statusType": "Unauthorized",
+  "statusMessage": "No credentials are provided, or the provided credentials are refused.",
+  "transaction_id": "8658e3d0-386b-11ea-9b7c-c0b8835813bc"
+}

@@ -1,0 +1,122 @@
+{
+    "isLoanCancel" : "Yes",
+    "applicationId": "10000057324",
+    "requestHeaderSource": "Twonline",
+    "svcName": "CREATELOAN",
+    "partnerName": "Honda_TW",
+    "location": "MUMBAI",
+    "lob": "TW",
+    "createdBy": null,
+    "loanSource": "TW-Online",
+    "isOTPRequired": false,
+    "customerProfile": [
+        {
+            "partnerCustomerIdentifier": null,
+            "gender": "Female",
+            "maritalStatus": "Married",
+            "firstName": "Anand",
+            "lastName": "Panday",
+            "fatherFirstName": "Sunil",
+            "fatherLastName": "Kumar",
+            "motherFirstName": "Babita",
+            "motherLastName": "Devi",
+            "spouseFirstName": "Ankit",
+            "spouseLastName": "Chauhan",
+            "applicantType": "Applicant",
+            "mobileNumber": "7875672167",
+            "emailId": "shruti.dinnimani0905@gmail.com",
+            "dateOfBirth": "19-05-1995",
+            "identifier": [
+                {
+                    "type": "PAN",
+                    "value": "BVZPH3167F"
+                }
+            ],
+            "address": [
+                {
+                    "addressLine1": "K H NO 3 MAKRAMMATPUR SIKROAD MAKARMAT P",
+                    "addressLine2": "GHAZIABAD",
+                    "addressLine3": "Ghaziabad",
+                    "state": null,
+                    "city": null,
+                    "landmark": null,
+                    "pincode": "201003",
+                    "addressType": "RESIDENCE ADDRESS",
+                    "propertyStatus": "O",
+                    "mailingAddress": "YES",
+                    "sameAsCurrentAddress": false
+                },
+                {
+                    "addressLine1": "K H NO 3 MAKRAMMATPUR SIKROAD MAKARMAT P",
+                    "addressLine2": "GHAZIABAD",
+                    "addressLine3": "Ghaziabad",
+                    "state": null,
+                    "city": null,
+                    "landmark": null,
+                    "pincode": "201003",
+                    "addressType": "PERMANENT ADDRESS",
+                    "propertyStatus": "O",
+                    "mailingAddress": "YES",
+                    "sameAsCurrentAddress": false
+                }
+            ],
+            "employmentInfo": [
+                {
+                    "employmentType": "Salaried",
+                    "employerName": "IDFC BANK",
+                    "annualGrossSalary": 600000,
+                    "typeOfOrganisation": "Private Limited Company"
+                }
+            ],
+            "incomeDetails": null,
+            "liability": [
+            ],
+            "bankingDetails": [
+            ]
+        }
+    ],
+    "offers": null,
+    "documents": null,
+    "consumerConsent": null,
+    "campaignDetails": null,
+    "salespoint_code": null,
+     "cartInfo": [
+        {
+            "assetcost": 90000,
+            "assetGroup": "56",
+            "brand": "1111",
+            "isSupplierEditable": true,
+            "itemIdentifier": "item123",
+            "marginmoney": 40000,
+            "offerScheme": "182",
+            "productSku": "1984930",
+            "promoid": "175",
+            "supplier_code": "3665",
+            "tenure": 24
+        }
+    ],
+    "reference": [
+        {
+            "address": [
+            ],
+            "referenceFirstName": "gjklh",
+            "referenceLastName": "ythgfgj",
+            "referenceMiddleName": "yjghk",
+            "referenceMobilePhoneNumber": "",
+            "referenceRelationToCustomer": "FRIEND",
+            "referenceTitle": "Mr"
+        },
+        {
+            "address": [
+            ],
+            "referenceFirstName": "hjgjmn",
+            "referenceLastName": "hhgkhl",
+            "referenceMiddleName": "dgfgjmh",
+            "referenceMobilePhoneNumber": "",
+            "referenceRelationToCustomer": "FRIEND",
+            "referenceTitle": "Mr"
+        }
+    ],
+    "surrogateInfo": [
+    ]
+}

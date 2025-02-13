@@ -1,0 +1,161 @@
+{
+  "requestHeaderSource": "sint",
+  "offers": null,
+  "isLoanCancel": "ab",
+  "partnerName": "voluptas",
+  "isOTPRequired": false,
+  "documents": null,
+  "customerProfile": [
+    {
+      "lastName": "Smithies",
+      "identifier": [
+        
+      ],
+      "address": [
+        
+      ],
+      "gender": "male",
+      "fatherLastName": "officia",
+      "employmentInfo": [
+        
+      ],
+      "mobileNumber": "consequuntur",
+      "liability": [
+        
+      ],
+      "spouseFirstName": "nulla",
+      "emailId": "49b915b80f2640feb17",
+      "dateOfBirth": "sint",
+      "spouseLastName": "voluptatem",
+      "firstName": "Cruz",
+      "fatherFirstName": "adipisci",
+      "motherFirstName": "sunt",
+      "partnerCustomerIdentifier": null,
+      "applicantType": "quam",
+      "bankingDetails": [
+        
+      ],
+      "motherLastName": "consequat.",
+      "maritalStatus": "Lorem",
+      "incomeDetails": null,
+      "": {
+        
+      }
+    },
+    {
+      "lastName": "Shokida",
+      "identifier": [
+        
+      ],
+      "address": [
+        
+      ],
+      "gender": "female",
+      "fatherLastName": "quia",
+      "employmentInfo": [
+        
+      ],
+      "mobileNumber": "nisi",
+      "liability": [
+        
+      ],
+      "spouseFirstName": "quia",
+      "emailId": "0ef4d41e58ac4e2f8f9",
+      "dateOfBirth": "veniam,",
+      "spouseLastName": "doloremque",
+      "firstName": "Abram",
+      "fatherFirstName": "sed",
+      "motherFirstName": "consectetur,",
+      "partnerCustomerIdentifier": null,
+      "applicantType": "voluptatem",
+      "bankingDetails": [
+        
+      ],
+      "motherLastName": "dolorem",
+      "maritalStatus": "quisquam",
+      "incomeDetails": null,
+      "": {
+        
+      }
+    }
+  ],
+  "svcName": "Dallas",
+  "salespoint_code": null,
+  "cartInfo": [
+    {
+      "assetcost": 35,
+      "assetGroup": "autem",
+      "productSku": "aut",
+      "offerScheme": "sit",
+      "isSupplierEditable": true,
+      "itemIdentifier": "ad",
+      "promoid": "2369cb4feee54e0e9b4",
+      "brand": "Lorem",
+      "supplier_code": "ut",
+      "tenure": 93,
+      "marginmoney": 63,
+      "": {
+        
+      }
+    },
+    {
+      "assetcost": 66,
+      "assetGroup": "occaecat",
+      "productSku": "Excepteur",
+      "offerScheme": "ea",
+      "isSupplierEditable": false,
+      "itemIdentifier": "aut",
+      "promoid": "28adf7b758024298a5d",
+      "brand": "consectetur",
+      "supplier_code": "est,",
+      "tenure": 4,
+      "marginmoney": 35,
+      "": {
+        
+      }
+    }
+  ],
+  "reference": [
+    {
+      "address": [
+        
+      ],
+      "referenceRelationToCustomer": "numquam",
+      "referenceMobilePhoneNumber": "voluptatem",
+      "referenceFirstName": "vel",
+      "referenceTitle": "laboriosam,",
+      "referenceMiddleName": "ipsa",
+      "referenceLastName": "culpa",
+      "": {
+        
+      }
+    },
+    {
+      "address": [
+        
+      ],
+      "referenceRelationToCustomer": "architecto",
+      "referenceMobilePhoneNumber": "occaecat",
+      "referenceFirstName": "porro",
+      "referenceTitle": "enim",
+      "referenceMiddleName": "exercitationem",
+      "referenceLastName": "magnam",
+      "": {
+        
+      }
+    }
+  ],
+  "createdBy": null,
+  "loanSource": "laborum.",
+  "surrogateInfo": [
+    "id",
+    "nisi"
+  ],
+  "location": "quasi",
+  "consumerConsent": null,
+  "campaignDetails": null,
+  "lob": "quia",
+  "": {
+    
+  }
+}

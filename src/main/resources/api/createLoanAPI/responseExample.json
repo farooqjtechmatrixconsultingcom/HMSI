@@ -1,0 +1,26 @@
+ {
+        "orderSummary": {
+          "modelName": "ss",
+          "modelVariant": "ss",
+          "modelColour": "red",
+          "modelExShowroomPrice": 500000,
+          "insurance": "www",
+          "rto": "ss",
+          "financerName": "ssssx",
+          "dealerName": "wewew",
+          "loanTenor": 36,
+          "downloadPayment": "wswsw",
+          "loanAmount": 450000,
+          "roi": 8.5,
+          "emi": 13500,
+          "processingFees": 232
+        },
+        "sanction": {
+          "sanctionLoanAmount": 2323,
+          "downPayment": 50000,
+          "roiSanction": 8.5,
+          "onRoadPrice": 233,
+          "emiSanction": 14000,
+          "tenure": 36
+        }
+}        

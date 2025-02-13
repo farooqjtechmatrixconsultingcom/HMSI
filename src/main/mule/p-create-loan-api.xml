@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+	<http:listener-config
+		name="p-create-loan-api-httpListenerConfig">
+		<http:listener-connection host="0.0.0.0"
+			port="8081" />
+	</http:listener-config>
+	<apikit:config name="p-create-loan-api-config"
+		api="resource::12011993-977a-49e8-94b6-9869ac8c3369:p-create-loan-api:1.0.2:raml:zip:p-create-loan-api.raml"
+		outboundHeadersMapName="outboundHeaders"
+		httpStatusVarName="httpStatus" />
+	<http:request-config
+		name="HTTP_Request_configuration"
+		doc:name="HTTP Request configuration"
+		doc:id="1891e925-b5f9-4936-a719-67df15eb7704">
+		<http:request-connection protocol="HTTPS"
+			host="createloantwqa-api-kfx0hw.5sc6y6-4.usa-e2.cloudhub.io" />
+	</http:request-config>
+	<http:request-config
+		name="HTTP_Request_configuration1"
+		doc:name="HTTP Request configuration"
+		doc:id="77c5ea20-d55d-47f4-b971-ed9ef3df1c7c">
+		<http:request-connection protocol="HTTPS"
+			host="loan-cancel-api-kfx0hw.5sc6y6-3.usa-e2.cloudhub.io" />
+	</http:request-config>
+	<http:request-config
+		name="HTTP_Request_configuration2"
+		doc:name="HTTP Request configuration"
+		doc:id="96a0b970-f036-4002-b54c-d156cd87613c">
+		<http:request-connection protocol="HTTPS"
+			host="checkapplciationstatus-api-kfx0hw.5sc6y6-2.usa-e2.cloudhub.io" />
+	</http:request-config>
+	<http:request-config
+		name="HTTP_Request_configuration3"
+		doc:name="HTTP Request configuration"
+		doc:id="e20fdb99-4814-4a33-b64f-6d3900dd2372">
+		<http:request-connection protocol="HTTPS"
+			host="updateloantwqa-api-kfx0hw.5sc6y6-3.usa-e2.cloudhub.io" />
+	</http:request-config>
+	<flow name="p-create-loan-api-main">
+		<http:listener
+			config-ref="p-create-loan-api-httpListenerConfig" path="/api/*">
+			<http:response
+				statusCode="#[vars.httpStatus default 200]">
+				<http:headers>#[vars.outboundHeaders default {}]</http:headers>
+			</http:response>
+			<http:error-response
+				statusCode="#[vars.httpStatus default 500]">
+				<http:body>#[payload]</http:body>
+				<http:headers>#[vars.outboundHeaders default {}]</http:headers>
+			</http:error-response>
+		</http:listener>
+		<apikit:router config-ref="p-create-loan-api-config" />
+		<error-handler>
+			<on-error-propagate type="APIKIT:BAD_REQUEST">
+				<ee:transform doc:name="Transform Message">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus">400
+						</ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate type="APIKIT:NOT_FOUND">
+				<ee:transform doc:name="Transform Message">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus">404
+						</ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate
+				type="APIKIT:METHOD_NOT_ALLOWED">
+				<ee:transform doc:name="Transform Message">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus">405
+						</ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+				<ee:transform doc:name="Transform Message">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus">406
+						</ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate
+				type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+				<ee:transform doc:name="Transform Message">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus">415
+						</ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+				<ee:transform doc:name="Transform Message">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus">501
+						</ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="p-create-loan-api-console">
+		<http:listener
+			config-ref="p-create-loan-api-httpListenerConfig" path="/console/*">
+			<http:response
+				statusCode="#[vars.httpStatus default 200]">
+				<http:headers>#[vars.outboundHeaders default {}]</http:headers>
+			</http:response>
+			<http:error-response
+				statusCode="#[vars.httpStatus default 500]">
+				<http:body>#[payload]</http:body>
+				<http:headers>#[vars.outboundHeaders default {}]</http:headers>
+			</http:error-response>
+		</http:listener>
+		<apikit:console config-ref="p-create-loan-api-config" />
+		<error-handler>
+			<on-error-propagate type="APIKIT:NOT_FOUND">
+				<ee:transform doc:name="Transform Message">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus">404
+						</ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow
+		name="post:\createLoan:application\json:p-create-loan-api-config">
+		<ee:transform doc:name="Global Payload">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[payload]" doc:name="Set Variable"
+			doc:id="524e70da-0607-445a-9a40-f997be6d4a82"
+			variableName="globalPayload" />
+		<choice doc:name="Choice"
+			doc:id="ef6f0117-4fad-4d29-ac90-5c00d6a760d4">
+			<when expression="#[payload.isLoanCancel == &quot;No&quot;]">
+				<flow-ref doc:name="p-create-loan-apiSub_Flow"
+					doc:id="23dc29ce-64ca-4c2b-90d1-7ebf882d7455"
+					name="p-create-loan-apiSub_Flow" />
+				<flow-ref
+					doc:name="p-create-loan-check-application-apiSub_Flow"
+					doc:id="b5efd018-0fba-44ca-a286-1459810d0a23"
+					name="p-create-loan-check-application-apiSub_Flow" />
+				<flow-ref doc:name="p-create-loan-update-apiSub_Flow"
+					doc:id="81fa1506-fd2e-4923-9dcf-cf00d0aef853"
+					name="p-create-loan-update-apiSub_Flow" />
+				<flow-ref
+					doc:name="p-create-loan-check-application-2-apiSub_Flow"
+					doc:id="aff7d693-48ec-4daa-b467-08202616ab54"
+					name="p-create-loan-check-application-apiSub_Flow" />
+				<ee:transform doc:name="‌Final Response"
+					doc:id="aa6fc4ca-9015-4e5f-8238-8e6749233da0">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "orderSummary": {
+    "modelName": '',
+    "modelVariant": '',
+    "modelColour": '',
+    "modelExShowroomPrice": vars.createLoanPayload.loanDetails[0].product[0].IBBMarketPrice,
+    "insurance": '',
+    "rto": '',
+    "financerName": '',
+    "dealerName": '',
+    "loanTenor": vars.createLoanPayload.loanDetails[0].product[0].netTenor,
+    "downloadPayment": '',
+    "loanAmount": vars.createLoanPayload.loanDetails[0].loanAmount,
+    "roi": vars.createLoanPayload.loanDetails[0].product[0].ROI,
+    "emi": vars.createLoanPayload.loanDetails[0].product[0].showRateEMI,
+    "processingFees": 0
+  },
+  "sanction": {
+    "sanctionLoanAmount": 0,
+    "downPayment": vars.createLoanPayload.loanDetails[0].product[0].netDownPayment,
+    "roiSanction": vars.createLoanPayload.loanDetails[0].product[0].ROI,
+    "onRoadPrice": 0,
+    "emiSanction": vars.createLoanPayload.loanDetails[0].product[0].EMIAmount,
+    "tenure": vars.createLoanPayload.loanDetails[0].maxtenure
+  }
+}
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger"
+					doc:id="5e33f4df-8ef9-4cb6-b3a2-a0b04a01dc5e" message="#[payload]" />
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Loan Cancel Request Payload"
+					doc:id="0ffbabbc-cfcd-4001-ae13-ab87937548c3">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"loanApplicationNumber" : payload.applicationId
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<http:request method="POST"
+					doc:name="Loan Cancel Request"
+					doc:id="f9daa43c-f1a6-4641-952c-431fc528a772"
+					config-ref="HTTP_Request_configuration1" path="/api/loanCancel">
+					<http:headers><![CDATA[#[output application/java
+---
+{
+	"vendor-name" : "idfc"
+}]]]></http:headers>
+				</http:request>
+			</otherwise>
+		</choice>
+	</flow>
+	<sub-flow name="p-create-loan-apiSub_Flow"
+		doc:id="3a58223f-9954-488f-b2a2-051a8f0c1064">
+		<ee:transform doc:name="Create Loan Request Payload"
+			doc:id="4256272c-6924-4b43-847a-8684eed7a7f9">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "requestHeaderSource": payload.requestHeaderSource,
+    "svcName": payload.svcName,
+    "partnerName": payload.partnerName,
+    "location": payload.location,
+    "lob": payload.lob,
+    "createdBy": payload.createdBy,
+    "loanSource": payload.loanSource,
+    "isOTPRequired": payload.isOTPRequired,
+    "customerProfile": payload.customerProfile map ((profile) -> {
+        "partnerCustomerIdentifier": null,
+        "gender": profile.gender,
+        "maritalStatus": profile.maritalStatus,
+        "firstName": profile.firstName,
+        "lastName": profile.lastName,
+        "fatherFirstName": profile.fatherFirstName,
+        "fatherLastName": profile.fatherLastName,
+        "motherFirstName": profile.motherFirstName,
+        "motherLastName": profile.motherLastName,
+        "spouseFirstName": profile.spouseFirstName,
+        "spouseLastName": profile.spouseLastName,
+        "applicantType": profile.applicantType,
+        "mobileNumber": profile.mobileNumber,
+        "emailId": profile.emailId,
+        "dateOfBirth": profile.dateOfBirth,
+        "identifier": profile.identifier map ((id) -> {
+            "type": id."type",
+            "value": id.value
+        }),
+        "address": profile.address map ((addr) -> {
+            "addressLine1": addr.addressLine1,
+            "addressLine2": addr.addressLine2,
+            "addressLine3": addr.addressLine3,
+            "state": addr.state,
+            "city": addr.city,
+            "landmark": addr.landmark,
+            "pincode": addr.pincode,
+            "addressType": addr.addressType,
+            "propertyStatus": addr.propertyStatus,
+            "mailingAddress": addr.mailingAddress,
+            "sameAsCurrentAddress": addr.sameAsCurrentAddress
+        }),
+        "employmentInfo": profile.employmentInfo map ((emp) -> {
+            "employmentType": emp.employmentType,
+            "employerName": emp.employerName,
+            "annualGrossSalary": emp.annualGrossSalary,
+            "typeOfOrganisation": emp.typeOfOrganisation
+        }),
+        "incomeDetails": profile.incomeDetails
+    }),
+    "reference": null,
+    "offers": null,
+    "documents": null,
+    "consumerConsent": null,
+    "campaignDetails": null,
+    "salespoint_code": null
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST"
+			doc:name="Create Loan Request"
+			doc:id="17bcb488-8581-4b76-903e-48cfcf116380"
+			config-ref="HTTP_Request_configuration" path="/api/createLoanTWQA"
+			responseTimeout="60000">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"vendor-name" : "idfc"
+}]]]></http:headers>
+		</http:request>
+		<ee:transform doc:name="Create Loan Response Payload"
+			doc:id="fb7c2c98-ad2b-4b68-a029-981f3c586910">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="createLoanPayload"><![CDATA[%dw 2.0
+output application/json
+---
+payload as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="p-create-loan-check-application-apiSub_Flow"
+		doc:id="17a9a389-6eb2-4e47-b147-3fa2a13f3c64">
+		<until-successful maxRetries="4"
+			doc:name="Until Successful"
+			doc:id="94cfce3c-c34e-437d-9070-d5eecd1c5981"
+			millisBetweenRetries="5000">
+			<ee:transform
+				doc:name="Check Application Request Payload"
+				doc:id="e40c8dfc-71bd-4193-864c-f448136b16fc">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "id": vars.globalPayload.applicationId
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<http:request method="POST"
+				doc:name="Check Application Status Request"
+				doc:id="20d2cc30-c695-430c-ab92-e5daef41405e"
+				config-ref="HTTP_Request_configuration2"
+				path="/api/checkApplicationstatus">
+				<http:headers><![CDATA[#[output application/java
+---
+{
+	"vendor-name" : "idfc"
+}]]]></http:headers>
+			</http:request>
+			<ee:transform
+				doc:name="Check Application Response Payload"
+				doc:id="455f4507-1eda-4100-a9ce-c0572212c488">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="checkAppPayload"><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</until-successful>
+	</sub-flow>
+	<sub-flow name="p-create-loan-update-apiSub_Flow"
+		doc:id="db2bbc58-80f1-4968-a898-05fe15e35fd1">
+		<ee:transform doc:name="Update Loan Request Payload"
+			doc:id="d9d11194-1813-4f9f-b924-4576344480ee">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "requestHeaderSource": "TWonline",
+    "svcName": "UPDATELOAN",
+    "applicationId": "10000057324",
+
+    "cartInfo": vars.globalPayload.cartInfo map ((cart) -> {
+        "brand": cart.brand,
+        "itemIdentifier": cart.itemIdentifier,
+        "assetGroup": cart.assetGroup,
+        "promoid": cart.promoid,
+        "tenure": cart.tenure,
+        "supplier_code": cart.supplier_code,
+        "marginmoney": cart.marginmoney,
+        "productSku": cart.productSku,
+        "offerScheme": cart.offerScheme,
+        "assetcost": cart.assetcost,
+        "isSupplierEditable": cart.isSupplierEditable
+    }),
+    "customerProfile": [
+        {
+            "partnerCustomerIdentifier": 
+                (vars.globalPayload.customerProfile[0].partnerCustomerIdentifier as Number default 0),
+            "bankingDetails": 
+                if (!isEmpty(vars.globalPayload.customerProfile[0].bankingDetails)) 
+                do { vars.globalPayload.customerProfile[0].bankingDetails } 
+                else [],
+            "liability": 
+                if (!isEmpty(vars.globalPayload.customerProfile[0].liability)) 
+                do { vars.globalPayload.customerProfile[0].liability } 
+                else [],
+            "employmentInfo": vars.globalPayload.customerProfile[0].employmentInfo map ((emp) -> {
+                "employmentType": emp.employmentType,
+                "employerName": emp.employerName,
+                "annualGrossSalary": emp.annualGrossSalary
+            })
+        }
+    ],
+    "incomeDetails": 
+        if (!isEmpty(vars.globalPayload.customerProfile[0].incomeDetails)) 
+        do { vars.globalPayload.customerProfile[0].incomeDetails } 
+        else [],
+    "reference": vars.globalPayload.reference map ((ref) -> {
+        "referenceRelationToCustomer": ref.referenceRelationToCustomer,
+        "referenceTitle": ref.referenceTitle,
+        "referenceFirstName": ref.referenceFirstName,
+        "referenceMiddleName": ref.referenceMiddleName,
+        "referenceLastName": ref.referenceLastName,
+        "referenceMobilePhoneNumber": ref.referenceMobilePhoneNumber,
+        "address": 
+            if (!isEmpty(ref.address)) 
+            do { 
+                ref.address map ((addr) -> {
+                    "addressLine1": addr.addressLine1,
+                    "addressLine2": addr.addressLine2,
+                    "addressLine3": addr.addressLine3,
+                    "state": addr.state,
+                    "city": addr.city,
+                    "landmark": addr.landmark,
+                    "pincode": addr.pincode,
+                    "addressType": addr.addressType,
+                    "propertyStatus": addr.propertyStatus,
+                    "mailingAddress": addr.mailingAddress,
+                    "sameAsCurrentAddress": addr.sameAsCurrentAddress
+                })
+            } 
+            else []
+    }),
+    "offers": 
+        (vars.globalPayload.offers as Array default []),
+    "surrogateInfo": 
+        if (vars.globalPayload.surrogateInfo != []) vars.globalPayload.surrogateInfo[0] else [],
+    "consumerConsent": null
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST"
+			doc:name="Update Loan Request"
+			doc:id="44651faa-6eff-4e80-abd4-f9418bd59553"
+			config-ref="HTTP_Request_configuration3" path="/api/updateLoanTWQA"
+			responseTimeout="50000">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"vendor-name" : "idfc"
+}]]]></http:headers>
+		</http:request>
+		<ee:transform doc:name="Update Loan Response Payload"
+			doc:id="e423c8c4-5eac-4488-a6e8-77bfe056feea">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="updatePayload"><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</sub-flow>
+</mule>

@@ -1,0 +1,19 @@
+#%RAML 1.0
+title: p-create-loan-api
+
+traits:
+  default-error-responses: !include errorResponse.raml
+
+/createLoan:
+  post:
+    is: [default-error-responses]
+    body:
+      application/json:
+        type: !include createLoanAPI/request.raml
+        example: !include createLoanAPI/requestExample.json 
+    responses:
+      200:
+        body:
+          application/json:
+            type: !include createLoanAPI/response.raml
+            example: !include createLoanAPI/responseExample.json  

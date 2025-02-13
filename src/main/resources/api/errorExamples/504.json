@@ -1,0 +1,6 @@
+{
+  "statusCode": 504,
+  "statusType": "Gateway Timeout",
+  "statusMessage": "Gateway Timeout: proxy timed out waiting for response from service implementation.",
+  "transaction_id": "8658e3d0-386b-11ea-9b7c-c0b8835813bc"
+}

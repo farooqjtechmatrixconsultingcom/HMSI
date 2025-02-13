@@ -1,0 +1,6 @@
+{
+  "statusCode": 422,
+  "statusType": "Unprocessable entity",
+  "statusMessage": "Semantically incorrect entity is provided as input",
+  "transaction_id": "8658e3d0-386b-11ea-9b7c-c0b8835813bc"
+}

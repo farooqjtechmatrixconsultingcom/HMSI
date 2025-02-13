@@ -1,0 +1,6 @@
+{
+  "statusCode": 500,
+  "statusType": "Internal Server Error",
+  "statusMessage": "A server-side exception occurred that prevented the system from correctly returning the result. Refer to the error details response to identify exception details.",
+  "transaction_id": "8658e3d0-386b-11ea-9b7c-c0b8835813bc"
+}
