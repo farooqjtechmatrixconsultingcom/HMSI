@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	
+		    <http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1ecf0614-b18d-4a53-82ce-44a67a71fcb0" >
+		<http:request-connection host="tokenhmsiapi-kfx0hw.5sc6y6-3.usa-e2.cloudhub.io" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="8f80389c-3bd4-4359-b6ea-e3fdd04f579d" >
+		<http:request-connection protocol="HTTPS" host="apiext.uat.idfcfirstbank.com" />
+	</http:request-config>
+	<sub-flow name="subflow" doc:id="cda845d5-68d3-48cd-a354-35c498977a36">
+        <http:request method="POST" doc:name="tokenAPI Request" doc:id="22fa75b3-ffde-49c0-84a0-815dab0ab267" config-ref="HTTP_Request_configuration" path="/api/token" target="hmsiToken" />
+        <logger level="INFO" doc:name="Logger" doc:id="9173ede7-b549-4595-a52e-bd8df8fdb4fb" message="#[vars.hmsiToken]" />
+		<java:new doc:name="New" doc:id="956f4f15-38d3-4150-a407-fb7a2eca9798" class="encodepayload" constructor="encodepayload()" target="encryptedText"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="f215e96d-5731-4a6c-b209-b5c44d917534" class="encodepayload" method="encrypt(java.lang.String,java.lang.String,java.lang.String)" target="encryptedPayload">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+data : payload,
+secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
+iv: "1LLCyESRssvXXiX1"
+
+}]]]></java:args>
+		</java:invoke-static>
+        <logger level="INFO" doc:name="Logger" doc:id="8d0aa364-bdca-4749-af79-462f6f009631" message="#[vars.encryptedPayload]" />
+        <http:request method="POST" doc:name="Loan Cancel API Request" doc:id="09404434-529c-47f2-836c-f9e318e7a1ec" config-ref="HTTP_Request_configuration1" path="/sfdc-inbound/inbound" target="encryptedPayload">
+            <http:body><![CDATA[#[vars.encryptedPayload]]]></http:body>
+            <http:headers><![CDATA[#[output application/java
+---
+{
+	"source" : "hondatw",
+	"correlationId" : "71bc-c4e5-6017-9d55-7d5172",
+	"environment" : "VHUAT",
+	"Content-Type" : "application/octet-stream",
+	"svc_name" : "customercancel",
+	"authorization" : "Bearer " ++ (vars.hmsiToken.access_token)
+}]]]></http:headers>
+        </http:request>
+        <java:new constructor="decodepayload()" doc:name="New" doc:id="1ff1ee6f-d5f5-4837-8c54-54d4ad99a19a" class="decodepayload"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="b75f47f3-4cbf-4357-9cd3-30fe5bc25281" class="decodepayload" target="decryptedPayload" method="decrypt(java.lang.String,java.lang.String,java.lang.String)">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+encryptedData : vars.encryptedPayload,
+secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
+iv: "1LLCyESRssvXXiX1"
+
+}]]]></java:args>
+		</java:invoke-static>
+        <logger level="INFO" doc:name="Logger" doc:id="2174ec28-aad7-486b-bf8f-ee14e65687b4" message="#[payload]" />
+		<ee:transform doc:name="Transform Message" doc:id="07de349c-9ea0-4373-8576-bc21820489df" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+read(vars.decryptedPayload, "application/json")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </sub-flow>
+</mule>
