@@ -1,0 +1,10 @@
+%dw 2.0
+
+type auto_aac0531f_2c1d_4a1b_b739_57967ca5b2e7_Output_Payload = {
+  partnerName?: String, 
+  PANnumber?: String, 
+  Mobile?: String, 
+  _?: Any
+} {"mediaType": "application/json",
+"encoding": "UTF-8"}
+
