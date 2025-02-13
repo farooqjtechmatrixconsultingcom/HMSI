@@ -1,0 +1,29 @@
+%dw 2.0
+
+type auto_98a040d8_942f_4cc1_bff3_fd15cca97823_Output_Payload = {
+  so_email?: String | Null, 
+  NeedMore_Flag?: String | Null, 
+  ro_email?: String | Null, 
+  assignToTelecaller?: String | Null, 
+  apiCalloutCount?: Number, 
+  businessUnit?: String | Null, 
+  loanDetails?: String | Null, 
+  ContinueFlow?: String | Null, 
+  transactionID?: String | Null, 
+  SFDCID?: String | Null, 
+  ro_mobile?: String | Null, 
+  requestId?: String, 
+  AppEndComment?: String | Null, 
+  taScoring?: String | Null, 
+  MessageDisplay?: String | Null, 
+  status: {
+    recordId?: String | Null, 
+    responseMessage?: String, 
+    error: Array<{      errorDescription?: String,       errorCode?: String | Null,       _?: Any    }>, 
+    responseCode?: String, 
+    _?: Any
+  }, 
+  so_mobile?: String | Null, 
+  _?: Any
+}
+

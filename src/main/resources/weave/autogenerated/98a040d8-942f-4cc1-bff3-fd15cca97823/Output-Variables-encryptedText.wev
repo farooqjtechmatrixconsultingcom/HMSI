@@ -1,0 +1,6 @@
+%dw 2.0
+
+type auto_98a040d8_942f_4cc1_bff3_fd15cca97823_Output_Variables_encryptedText = {|  |} {"typeAlias": "encryptpayload",
+"typeId": "encryptpayload",
+"class": "encryptpayload"}
+
