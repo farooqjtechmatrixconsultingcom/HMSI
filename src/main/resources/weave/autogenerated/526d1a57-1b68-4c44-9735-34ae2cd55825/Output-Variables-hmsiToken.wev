@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_526d1a57_1b68_4c44_9735_34ae2cd55825_Output_Variables_hmsiToken = Any
+

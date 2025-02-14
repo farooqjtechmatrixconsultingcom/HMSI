@@ -1,0 +1,50 @@
+%dw 2.0
+
+type auto_526d1a57_1b68_4c44_9735_34ae2cd55825_Output_Payload = {
+  so_email: String, 
+  NeedMore_Flag?: String | Null, 
+  ro_email: String, 
+  assignToTelecaller: Boolean, 
+  apiCalloutCount: Number, 
+  businessUnit: String, 
+  loanDetails: Array<{    maxAllowedLoanAmount: String | Null,     ABB: String | Null,     applicationNumber: String,     blazeError: String | Null,     applicationDecision: String | Null,     reference: String | Null,     soaWaiver: String | Null,     finalTier: String | Null,     finnnoeId: String | Null,     maxtenure: String | Null,     AALink: String | Null,     Debu_Tier: String | Null,     product: Array<{      offers: String | Null,       programType: String,       showRateEMI: String | Null,       serviceTax: String | Null,       accessoriesLTV: String | Null,       LTV_percent: String | Null,       IRR: String | Null,       MRP: String | Null,       EMIAmount: String | Null,       ROI: String | Null,       MOP: String | Null,       IBBMarketPrice: String | Null,       bikeLTV: String | Null,       shortReceived: String | Null,       schemeIds: String | Null,       charges: Array<{        charge_Amount: String | Null,         service_tax: String | Null,         funded_flag: Boolean,         charge_Id: String | Null,         charge_Rate: String | Null,         _?: Any      }>, 
+      fundingValue: String | Null, 
+      disbursementAmount: String | Null, 
+      advanceEMIAmount: String | Null, 
+      netTenor: String | Null, 
+      netDownPayment: String | Null, 
+      _?: Any
+    }>, 
+    displayOffer: String | Null, 
+    customerProfile: Array<{      partnerCustomerIdentifier: String | Null,       crn: String | Null,       _?: Any    }>, 
+    AAStatus: String | Null, 
+    aaCount: String | Null, 
+    subStatus: String, 
+    stp: String | Null, 
+    loanAmount: String | Null, 
+    assisted: String | Null, 
+    retryApplicable: String | Null, 
+    otpNumber: String | Null, 
+    status: String, 
+    ScorecardEligibleAmount: String | Null, 
+    _?: Any
+  }>, 
+  ContinueFlow: String, 
+  transactionID?: String | Null, 
+  SFDCID: String, 
+  ro_mobile: String, 
+  requestId: String, 
+  AppEndComment: String | Null, 
+  taScoring?: String | Null, 
+  MessageDisplay: String, 
+  status: {
+    recordId: String, 
+    responseMessage: String, 
+    error: Array<String>, 
+    responseCode: String, 
+    _?: Any
+  }, 
+  so_mobile: String, 
+  _?: Any
+}
+

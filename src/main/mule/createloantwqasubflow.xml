@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2e4a2d53-f865-4e6c-b248-5332d2087ab8" >
+		<http:request-connection host="tokenhmsiapi-kfx0hw.5sc6y6-3.usa-e2.cloudhub.io" protocol="HTTPS"/>
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="eae91818-521e-45f4-870d-284f9960a42e" >
+		<http:request-connection protocol="HTTPS" host="apiext.uat.idfcfirstbank.com" port="443"/>
+	</http:request-config>
+	<sub-flow name="createloantwqasubflowSub_Flow" doc:id="526d1a57-1b68-4c44-9735-34ae2cd55825" >
+		<http:request method="POST" doc:name="Request" doc:id="c8f591db-c7f2-4aa5-93b0-e21364915194" config-ref="HTTP_Request_configuration" path="/api/token" target="hmsiToken"/>
+		<logger level="INFO" doc:name="Logger" doc:id="8dec9d4c-426b-485b-a3d6-ceb17dace9eb" message="#[vars.hmsiToken]"/>
+		<java:new constructor="encryptedpayload()" doc:name="New" doc:id="b63a3267-f524-4315-9380-18e343eb8cd4" class="encryptedpayload" target="encryptedText"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="74c9d7bc-6e62-43a1-8058-05bdd7edb2d0" target="encryptedPayload" class="encryptedpayload" method="encrypt(java.lang.String,java.lang.String,java.lang.String)">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+data : payload,
+secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
+iv: "1LLCyESRssvXXiX1"
+
+}]]]></java:args>
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="dc0c6255-9186-46c6-b3c5-25c98552d588" message="#[vars.encryptedPayload]"/>
+		<http:request method="POST" doc:name="Create Loan Request" doc:id="895046d9-30b7-44df-8586-a97c223eda00" config-ref="HTTP_Request_configuration1" path="/sfdc-inbound/inbound" target="encryptedPayload">
+			<http:body ><![CDATA[#[vars.encryptedPayload]]]></http:body>
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"source" : "hondatw",
+	"user_name" : "cflintegration",
+	"environment" : "VHUAT",
+	"Content-Type" : "application/octet-stream",
+	"password" : "sdfvklj40934tsdlvjk309sd",
+	"svc_name" : "CREATELOAN",
+	"authorization" : "Bearer " ++ (vars.hmsiToken.access_token)
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="ecf95b18-ec63-49ab-a0be-2397ae824dff" message="#[vars.encryptedPayload]"/>
+		<java:new constructor="decryptedpayload()" doc:name="New" doc:id="223e3116-44be-4b8a-846b-ea95d398056c" class="decryptedpayload"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="7526eb33-84ca-4bb7-9eca-f16894ca034f" class="decryptedpayload" method="decrypt(java.lang.String,java.lang.String,java.lang.String)" target="decryptedpayload">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+encryptedData : vars.encryptedPayload,
+secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
+iv: "1LLCyESRssvXXiX1"
+
+}]]]></java:args>
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="d5a7dfa7-fe4f-449b-94a6-5f329e983da7" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="a7fa7767-da10-4caa-a385-2e98d77016c8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+read(vars.decryptedpayload, "application/json")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>
