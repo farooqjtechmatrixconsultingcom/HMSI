@@ -1,0 +1,24 @@
+%dw 2.0
+
+type auto_807c38d4_42da_41d3_ab6f_b2f0d05003a0_Output_Payload = {
+  Content: {
+    product?: String, 
+    stage?: String, 
+    sourcingChannel?: String, 
+    createddate?: String, 
+    lastmodifieddate?: String, 
+    appRef?: String, 
+    mobile?: String, 
+    id?: String, 
+    applicantName?: String, 
+    subStage?: String, 
+    tenure?: String, 
+    leadId?: String, 
+    _?: Any
+  }, 
+  errorCode?: String, 
+  statusCode?: Number, 
+  status?: String, 
+  _?: Any
+}
+

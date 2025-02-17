@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="8bdeefc6-3801-4776-9ff4-1e3a9fc7c914" >
+		<http:request-connection protocol="HTTPS" host="apiclouduat.ltfs.com" port="1132" />
+	</http:request-config>
+	<sub-flow name="checkstatus-landt-subflowSub_Flow" doc:id="807c38d4-42da-41d3-ab6f-b2f0d05003a0" >
+		<java:new constructor="encryptedpayload()" doc:name="New" doc:id="ba465aa4-4a51-484d-82af-63ca2d2bd841" class="encryptedpayload" target="encryptedText"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="cfd3a857-1b88-4b94-8685-846d26fbbdd8" class="encryptedpayload" method="encrypt(java.lang.String,java.lang.String,java.lang.String)" target="encryptedPay">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+  key: "i*NaSNj_rxkPAH,#B^Caz?CSy@J#o+Hl1hNvXYXbu=mg9|L-@Lv:*=:58b8*J-v\$",
+  salt: "1fh,d&pgH8}Sxm><,^+d>4%4O^QR]G35",
+  unencryptedString: payload
+}]]]></java:args>
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="6645a910-db77-488e-afc4-6ef5a357cb0d" message="#[vars.encryptedPay]"/>
+		<ee:transform doc:name="Transform Message" doc:id="785ecc6c-8ac8-4b21-8a55-d3138a3e3635" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"body": vars.encryptedPay
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="Request" doc:id="873d0924-d6b4-496d-9048-746977766007" config-ref="HTTP_Request_configuration" path="/LTFSD2cApp/api/TWEAG/CheckStatus" target="encryptedResponse" responseTimeout="5000000">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Partner_Name" : "TWEAG_OEMHMSI",
+	"Client_Secret_Key" : "wr5otyi0kl563ZGXF1VMDTWVZ4MYALTMD9780uzd6upxuiwLXCG6SS",
+	"Content-Type" : "application/json",
+	"Client_Id" : "O7FGAj1px2-j91paXCULN-LIPYZbbh5i-ft8jzXPPOJ"
+}]]]></http:headers>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="b6929a1e-c88d-4e1b-b195-d72bd2d98acc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output text/plain
+var encryptedValue = vars.encryptedResponse
+---
+
+encryptedValue.body ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="057b429f-f83c-406a-ab2d-20f73eb0efc7" message="#[payload]"/>
+		<java:new doc:name="New" doc:id="9150b888-0642-4784-bbc0-cd9e23903b37" class="decryptedpayload" target="decryptText" constructor="decryptedpayload()"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="5fe20e9f-0b3c-4896-877c-0dbd3196dfde" method="decrypt(java.lang.String,java.lang.String,java.lang.String)" class="decryptedpayload" target="decryptText">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+  key: "i*NaSNj_rxkPAH,#B^Caz?CSy@J#o+Hl1hNvXYXbu=mg9|L-@Lv:*=:58b8*J-v\$",
+  salt: "1fh,d&pgH8}Sxm><,^+d>4%4O^QR]G35",
+  encryptedString: payload
+}]]]></java:args>
+		</java:invoke-static>
+		<ee:transform doc:name="Transform Message" doc:id="a3861931-582a-44c2-b04b-763b2dec1928" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+read(vars.decryptText, "application/json")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>
