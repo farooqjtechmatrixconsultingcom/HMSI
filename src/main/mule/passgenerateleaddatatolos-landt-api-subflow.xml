@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="203a8cde-f873-4f7e-bbe8-84707f6a2cf6" >
+		<http:request-connection protocol="HTTPS" host="apiclouduat.ltfs.com" port="1127"/>
+	</http:request-config>
+	<sub-flow name="passgenerateleaddatatolos-landt-api-subflowSub_Flow" doc:id="3cd8f5d8-4bf8-4eb2-8f11-f4aa3f651381" >
+		<java:new doc:name="New" doc:id="6dfba8c0-4357-413e-8f84-10a5e8769a9c" class="encryptedpayload" constructor="encryptedpayload()" target="encryptedText">
+		</java:new>
+		<java:invoke-static doc:name="Invoke static" doc:id="dec89d4a-ffd6-45be-a300-6d00a7722a4d" class="encryptedpayload" method="encrypt(java.lang.String,java.lang.String,java.lang.String)" target="encryptedPay">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+  key: "i*NaSNj_rxkPAH,#B^Caz?CSy@J#o+Hl1hNvXYXbu=mg9|L-@Lv:*=:58b8*J-v\$",
+  salt: "1fh,d&pgH8}Sxm><,^+d>4%4O^QR]G35",
+  unencryptedString: payload
+}]]]></java:args>
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="4dcd902f-d516-4d85-b353-0ecaf20f1eeb" message="#[vars.encryptedPay]"/>
+		<ee:transform doc:name="Transform Message" doc:id="62abe642-fdf1-496b-8c5c-357af509211c">
+			<ee:message>
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"body": vars.encryptedPay
+}
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="80a5f42f-dbaf-4ddd-b94c-0e24a1c25e3b" message="#[payload]"/>
+		<http:request method="POST" doc:name="Request" doc:id="680f4e5c-73f0-46b6-8ce4-b44363fe7c01" config-ref="HTTP_Request_configuration" path="/LTFSD2cApp/api/TWEAG/passGenerateLeadDataToLOS" responseTimeout="5000000" target="encryptedResponse">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Partner_Name" : "TWEAG_OEMHMSI",
+	"Client_Secret_Key" : "wr5otyi0kl563ZGXF1VMDTWVZ4MYALTMD9780uzd6upxuiwLXCG6SS",
+	"Content-Type" : "application/json",
+	"Client_Id" : "O7FGAj1px2-j91paXCULN-LIPYZbbh5i-ft8jzXPPOJ"
+}]]]></http:headers>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="c60d5ead-3eaf-41b0-9a10-9e94ca0dbe2e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output text/plain
+var encryptedValue = vars.encryptedResponse
+---
+encryptedValue.body
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="4d8b8f92-b6b6-4b9a-99e3-3abd324bbd6f" message="#[payload]" />
+		<java:new doc:name="New" doc:id="67e55f2d-bcf0-4d68-a623-23e6572b2707" class="decryptedpayload" target="decryptText" constructor="decryptedpayload()">
+		</java:new>
+		<java:invoke-static doc:name="Invoke static" doc:id="0bfd36f7-48e0-4196-a916-ef24a4a405b3" target="decryptedText" class="decryptedpayload" method="decrypt(java.lang.String,java.lang.String,java.lang.String)">
+			<java:args ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+  key: "i*NaSNj_rxkPAH,#B^Caz?CSy@J#o+Hl1hNvXYXbu=mg9|L-@Lv:*=:58b8*J-v\$",
+  salt: "1fh,d&pgH8}Sxm><,^+d>4%4O^QR]G35",
+  encryptedString: payload
+}]]]></java:args>
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="8218bbd9-d46c-49da-94f1-f5fd83e9cc93" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="b0ca3e8c-9f8f-4b4e-933f-f096390a5a75" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+read(vars.decryptedText, "application/json")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

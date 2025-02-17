@@ -1,0 +1,232 @@
+%dw 2.0
+
+type auto_3cd8f5d8_4bf8_4eb2_8f11_f4aa3f651381_Input_Payload = {
+  IsOHPDocPresent?: Boolean, 
+  applicants: Array<{    Applicant_Type__c?: String,     Bureau_Status__c?: String,     attributes: {      "type"?: String,       url?: String,       _?: Any    },     Id?: String,     genesis__Party_Account_Name__c?: String,     genesis__Party_Account_Name__r: {      Perfios_Salary_Zero__c?: Boolean,       Financial_Applicant__c?: Boolean,       UCID__c?: String,       FirstName?: String,       attributes: {        "type"?: String,         url?: String,         _?: Any      },       Id?: String,       LastName?: String,       PersonEmail?: String,       Occupation__c?: String,       Fuzzy_logic__c?: String,       Name?: String,       _?: Any    },     genesis__Application__r: {      attributes: {        "type"?: String,         url?: String,         _?: Any      },       Is_Non_APF__c?: Boolean,       Id?: String,       _?: Any    },     genesis__Application__c?: String,     genesis__Party_Type__c?: String,     _?: Any  }>, 
+  errorMessage?: Null, 
+  breTWSCResponse: {
+    DAXMLDocument: {
+      OCONTROL?: Null, 
+      LTFSOUT: {
+        DECISION?: String, 
+        NEW_TENURE_30M?: String, 
+        RCUTRIGGER?: String, 
+        TotalMonthlyObligation?: Null, 
+        APPLICANTID?: String, 
+        NEW_TENURE_9M?: String, 
+        DUMMYFIELD1?: String, 
+        NEW_TENURE_18M?: String, 
+        CYCLOPS_LTV_ELIGIBILITY?: Null, 
+        FOIR?: Null, 
+        ABB_EMI_ELIGIBILITY?: Null, 
+        DUMMYFIELD22?: String, 
+        DUMMYFIELD23?: String, 
+        DUMMYFIELD21?: String, 
+        DUMMYFIELD26?: Null, 
+        DUMMYFIELD27?: Null, 
+        RCUSCVARIABLES: {
+          RCUSCORE?: String, 
+          LTVCOEFFICIENT?: String, 
+          TAGGING?: String, 
+          DECILE?: String, 
+          HUNTERSUBTRIGGERCOEFFICIENT?: String, 
+          LOGINFLAGCOEFFICIENT?: String, 
+          FLSCOEFFICIENT?: String, 
+          TYPE?: String, 
+          TRIGGERTYPECOEFFICIENT?: String, 
+          BRANCHFACTORCOEFFICIENT?: String, 
+          STATEIDCOEFFICIENT?: String, 
+          _?: Any
+        }, 
+        DUMMYFIELD24?: String, 
+        DUMMYFIELD25?: Null, 
+        APPLICANTOUT?: Null, 
+        LOANELIGIBILITY?: String, 
+        ROI?: Null, 
+        NEW_TENURE_6M?: String, 
+        DUMMYFIELD6?: String, 
+        DUMMYFIELD7?: String, 
+        DUMMYFIELD8?: String, 
+        DUMMYFIELD2?: String, 
+        DUMMYFIELD3?: Null, 
+        DUMMYFIELD4?: String, 
+        DUMMYFIELD5?: String, 
+        APPLICATIONID?: String, 
+        NEW_TENURE_60M?: String, 
+        SWIMLANE?: String, 
+        EMI_CUSHION_ELIGIBILITY?: Null, 
+        COUNTEROFFER?: String, 
+        NEW_TENURE_12M?: String, 
+        NEW_TENURE_24M?: String, 
+        NEW_TENURE_36M?: String, 
+        NEW_TENURE_48M?: String, 
+        NEW_TENURE_3M?: String, 
+        CYCLOPSOUT?: Null, 
+        QUALIFICATIONCRITERIAWISE?: Null, 
+        SEGMENT?: Null, 
+        REASON_CODE: Array<{          item?: String,           _?: Any        }>, 
+        DUMMYFIELD19?: Null, 
+        DUMMYFIELD18?: String, 
+        DUMMYFIELD11?: String, 
+        DUMMYFIELD10?: String, 
+        DUMMYFIELD16?: Null, 
+        DUMMYFIELD14?: Null, 
+        _?: Any
+      }, 
+      _?: Any
+    }, 
+    _?: Any
+  }, 
+  errorCode?: String, 
+  breFARMResponse?: Null, 
+  deDupeStatus?: Null, 
+  cyclopsBreBankingFlag?: Null, 
+  onlyNoHypoPromo?: Boolean, 
+  Errors: Array<String>, 
+  Is_CII_App?: Boolean, 
+  breResult?: String, 
+  breHLResponse?: Null, 
+  perfiosNotAllowed?: Boolean, 
+  breResponseMsg?: String, 
+  application: {
+    Sanction_on_Hold__c?: Boolean, 
+    NID_Flag__c?: Boolean, 
+    genesis__Term__c?: Number, 
+    BRE_Max_Loan_Eligibility__c?: Number, 
+    Asset_Cost__c?: Number, 
+    Max_EMI_Amount__c?: Number, 
+    Application_Id__c?: String, 
+    Scheme__c?: String, 
+    Asset_Make_Master__c?: String, 
+    Portals_Utilitys__r: {
+      totalSize?: Number, 
+      records: Array<{        Loan_Sanction_DateTime__c?: String,         EPFO_Checked__c?: Boolean,         attributes: {          "type"?: String,           url?: String,           _?: Any        },         Id?: String,         IP_Checked__c?: Boolean,         Application__c?: String,         _?: Any      }>, 
+      done?: Boolean, 
+      _?: Any
+    }, 
+    Opportunities__r: {
+      totalSize?: Number, 
+      records: Array<{        attributes: {          "type"?: String,           url?: String,           _?: Any        },         Id?: String,         Application__c?: String,         _?: Any      }>, 
+      done?: Boolean, 
+      _?: Any
+    }, 
+    BRE_Min_Tenure__c?: Number, 
+    genesis__Account__c?: String, 
+    Extended_Application__c?: String, 
+    Manufacturer_Master__r: {
+      attributes: {
+        "type"?: String, 
+        url?: String, 
+        _?: Any
+      }, 
+      Id?: String, 
+      Manufacturer_Id__c?: Number, 
+      _?: Any
+    }, 
+    Supplier__r: {
+      attributes: {
+        "type"?: String, 
+        url?: String, 
+        _?: Any
+      }, 
+      Id?: String, 
+      Supplier_Id__c?: String, 
+      _?: Any
+    }, 
+    Income_Documents_Received__c?: Boolean, 
+    Loan_Sanction_Date__c?: String, 
+    genesis__CL_Product__r: {
+      BPI__c?: Number, 
+      attributes: {
+        "type"?: String, 
+        url?: String, 
+        _?: Any
+      }, 
+      Id?: String, 
+      Number_Of_Days__c?: Number, 
+      _?: Any
+    }, 
+    BRE_Rejection_Reason__c?: String, 
+    Swimlane_B_Required__c?: Boolean, 
+    genesis__Loan_Amount__c?: Number, 
+    genesis__Status__c?: String, 
+    Is_SENP__c?: Boolean, 
+    genesis__Account__r: {
+      attributes: {
+        "type"?: String, 
+        url?: String, 
+        _?: Any
+      }, 
+      Id?: String, 
+      Hunter_Severity__c?: String, 
+      _?: Any
+    }, 
+    Is_No_Hypo_Loan__c?: Boolean, 
+    Supplier__c?: String, 
+    BRE_Max_Tenure__c?: Number, 
+    No_of_Advance_Installments__c?: Number, 
+    Manufacturer_Master__c?: String, 
+    Extended_Application__r: {
+      Max_Eligibilty_Amount__c?: Number, 
+      Is_IP_to_NIP__c?: Boolean, 
+      HMSI_app__c?: Boolean, 
+      Special_Promo__c?: String, 
+      attributes: {
+        "type"?: String, 
+        url?: String, 
+        _?: Any
+      }, 
+      Id?: String, 
+      Step_up_Loan__c?: Boolean, 
+      DSA_Case__c?: Boolean, 
+      Perfios_Not_Allowed__c?: Boolean, 
+      Income_Option__c?: String, 
+      Product_Type__c?: String, 
+      _?: Any
+    }, 
+    TW_SC_Count__c?: Number, 
+    genesis__Interest_Rate__c?: Number, 
+    RCU_Triggered__c?: Boolean, 
+    Model_Master__r: {
+      attributes: {
+        "type"?: String, 
+        url?: String, 
+        _?: Any
+      }, 
+      Id?: String, 
+      Name?: String, 
+      _?: Any
+    }, 
+    Swimlane__c?: String, 
+    Application_Stage__c?: String, 
+    genesis__CL_Product__c?: String, 
+    Applied_Loan_Amount__c?: Number, 
+    Sub_Stage__c?: String, 
+    Promotion_Code__c?: String, 
+    attributes: {
+      "type"?: String, 
+      url?: String, 
+      _?: Any
+    }, 
+    Asset_Make_Master__r: {
+      attributes: {
+        "type"?: String, 
+        url?: String, 
+        _?: Any
+      }, 
+      MakeID__c?: String, 
+      Id?: String, 
+      _?: Any
+    }, 
+    Id?: String, 
+    Model_Master__c?: String, 
+    _?: Any
+  }, 
+  RejectReason?: String, 
+  nextActions?: String, 
+  breTWBCResponse?: Null, 
+  statusCode?: Number, 
+  status?: String, 
+  _?: Any
+}
+
