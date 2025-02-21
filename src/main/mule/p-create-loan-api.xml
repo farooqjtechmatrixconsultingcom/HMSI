@@ -9,7 +9,7 @@
 	<http:listener-config
 		name="p-create-loan-api-httpListenerConfig">
 		<http:listener-connection host="0.0.0.0"
-			port="8081" />
+			port="${http.port}" />
 	</http:listener-config>
 	<apikit:config name="p-create-loan-api-config"
 		api="resource::12011993-977a-49e8-94b6-9869ac8c3369:p-create-loan-api:1.0.2:raml:zip:p-create-loan-api.raml"
@@ -20,7 +20,7 @@
 		doc:name="HTTP Request configuration"
 		doc:id="1891e925-b5f9-4936-a719-67df15eb7704">
 		<http:request-connection protocol="HTTPS"
-			host="createloantwqa-api-kfx0hw.5sc6y6-4.usa-e2.cloudhub.io" />
+			host="createloantwqa-hmsi-api-kfx0hw.5sc6y6-4.usa-e2.cloudhub.io" />
 	</http:request-config>
 	<http:request-config
 		name="HTTP_Request_configuration1"
@@ -43,6 +43,8 @@
 		<http:request-connection protocol="HTTPS"
 			host="updateloantwqa-api-kfx0hw.5sc6y6-3.usa-e2.cloudhub.io" />
 	</http:request-config>
+	<global-property doc:name="Global Property" doc:id="8e59f4be-fbe2-4e1e-99fa-3052e9e617a8" name="env" value="config" />
+	<configuration-properties doc:name="Configuration properties" doc:id="6566b8a6-9451-453b-9ca8-e0d8be166cdd" file="${env}.properties" />
 	<flow name="p-create-loan-api-main">
 		<http:listener
 			config-ref="p-create-loan-api-httpListenerConfig" path="/api/*">
@@ -179,6 +181,7 @@ output application/json
 	</flow>
 	<flow
 		name="post:\createLoan:application\json:p-create-loan-api-config">
+		<logger level="INFO" doc:name="Entry Logger" doc:id="8ab91810-d2e2-467d-a515-b913cc86faea" message="p-create-loan-api-entry-logger"/>
 		<ee:transform doc:name="Global Payload">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
@@ -187,7 +190,7 @@ output application/json
 payload ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<set-variable value="#[payload]" doc:name="Set Variable"
+		<set-variable value="#[payload]" doc:name="Global Payload Variable"
 			doc:id="524e70da-0607-445a-9a40-f997be6d4a82"
 			variableName="globalPayload" />
 		<choice doc:name="Choice"
@@ -242,8 +245,9 @@ output application/json
 ]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger"
+				<logger level="INFO" doc:name="Final Response Logger"
 					doc:id="5e33f4df-8ef9-4cb6-b3a2-a0b04a01dc5e" message="#[payload]" />
+				<logger level="INFO" doc:name="Exit Logger" doc:id="7d33cbaa-81aa-4818-9f7f-66106959eff8" message="p-create-loan-api-exit-logger"/>
 			</when>
 			<otherwise>
 				<ee:transform doc:name="Loan Cancel Request Payload"
@@ -264,9 +268,10 @@ output application/json
 					<http:headers><![CDATA[#[output application/java
 ---
 {
-	"vendor-name" : "idfc"
+	"vendor-name" : p('hmsi.vendorname')
 }]]]></http:headers>
 				</http:request>
+				<logger level="INFO" doc:name="Final Loan Cancel Response Logger" doc:id="31a887e4-c1c9-47e7-950a-1044c2ed5f2c" message="#[payload]"/>
 			</otherwise>
 		</choice>
 	</flow>
@@ -346,7 +351,7 @@ output application/json
 			<http:headers><![CDATA[#[output application/java
 ---
 {
-	"vendor-name" : "idfc"
+	"vendor-name" : p('hmsi.vendorname')
 }]]]></http:headers>
 		</http:request>
 		<ee:transform doc:name="Create Loan Response Payload"
@@ -387,7 +392,7 @@ output application/json
 				<http:headers><![CDATA[#[output application/java
 ---
 {
-	"vendor-name" : "idfc"
+	"vendor-name" : p('hmsi.vendorname')
 }]]]></http:headers>
 			</http:request>
 			<ee:transform
@@ -415,7 +420,7 @@ output application/json
 {
     "requestHeaderSource": "TWonline",
     "svcName": "UPDATELOAN",
-    "applicationId": "10000057324",
+    "applicationId": vars.globalPayload.applicationId,
 
     "cartInfo": vars.globalPayload.cartInfo map ((cart) -> {
         "brand": cart.brand,
@@ -496,7 +501,7 @@ output application/json
 			<http:headers><![CDATA[#[output application/java
 ---
 {
-	"vendor-name" : "idfc"
+	"vendor-name" : p('hmsi.vendorname')
 }]]]></http:headers>
 		</http:request>
 		<ee:transform doc:name="Update Loan Response Payload"
