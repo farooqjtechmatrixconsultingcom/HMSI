@@ -7,7 +7,10 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	    	<sub-flow name="Sub_Flow" doc:id="98a040d8-942f-4cc1-bff3-fd15cca97823" >
+	    	<global-property doc:name="Global Property" doc:id="114edb01-06eb-40cc-a54d-0579a408098a" name="env" value="config" />
+	<configuration-properties doc:name="Configuration properties" doc:id="f3fe5c55-2411-467a-b112-1dc84d399dd0" file="${env}.properties" />
+	<sub-flow name="Sub_Flow" doc:id="98a040d8-942f-4cc1-bff3-fd15cca97823" >
+		<logger level="INFO" doc:name="Entry Logger" doc:id="cf5137f4-fcba-4567-91f9-36363434c83a" message="Sub_Flow_Entry_logger"/>
 		<http:request method="POST" doc:name="Token API Request" doc:id="aeab7209-6fd8-4549-874c-394a8489a92b" config-ref="HTTP_Request_configuration" path="/api/token" target="hmsiToken"/>
 		<logger level="INFO" doc:name="Logger" doc:id="6c35130f-a973-4c21-9719-75deef4ae686" message="#[vars.hmsiToken]"/>
 		<logger level="INFO" doc:name="Logger" doc:id="536d9b71-5608-40a3-8426-6687101552be" message="#[payload]"/>
@@ -18,8 +21,8 @@ output application/java
 ---
 {
 data : payload,
-secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
-iv: "1LLCyESRssvXXiX1"
+secretKey : p('hmsi.secretKey'),
+iv: p('hmsi.iv')
 
 }]]]></java:args>
 		</java:invoke-static>
@@ -29,12 +32,12 @@ iv: "1LLCyESRssvXXiX1"
 			<http:headers ><![CDATA[#[output application/java
 ---
 {
-	"source" : "hondatw",
-	"user_name" : "cflintegration",
-	"environment" : "VHUAT",
-	"Content-Type" : "application/octet-stream",
-	"password" : "sdfvklj40934tsdlvjk309sd",
-	"svc_name" : "CheckApplicationStatus",
+	"source" : p('hmsi.source'),
+	"user_name" : p('hmsi.user_name'),
+	"environment" : p('hmsi.environment'),
+	"Content-Type" : p('hmsi.Content'),
+	"password" : p('hmsi.password'),
+	"svc_name" : p('hmsi.svc_name'),
 	"authorization" : "Bearer " ++ (vars.hmsiToken.access_token)
 }]]]></http:headers>
 		</http:request>
@@ -46,8 +49,8 @@ output application/java
 ---
 {
 encryptedData : vars.encryptedPayload,
-secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
-iv: "1LLCyESRssvXXiX1"
+secretKey : p('hmsi.secretKey'),
+iv: p('hmsi.iv')
 
 }]]]></java:args>
 		</java:invoke-static>
@@ -60,6 +63,7 @@ output application/json
 read(vars.decryptedPayload, "application/json")]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Exit logger" doc:id="7f81b256-a6e4-444d-9c06-1eb4ee6cb879" message="Sub_Flow_Exit_logger"/>
 	
 </sub-flow>
 	
