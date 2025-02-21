@@ -12,51 +12,53 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="eae91818-521e-45f4-870d-284f9960a42e" >
 		<http:request-connection protocol="HTTPS" host="apiext.uat.idfcfirstbank.com" port="443"/>
 	</http:request-config>
+	<global-property doc:name="Global Property" doc:id="8f7bb8c1-287b-474a-b5c1-ca517b63884f" name="env" value="config" />
+	<configuration-properties doc:name="Configuration properties" doc:id="4765005a-b7eb-4e1b-8518-203ea45b3f46" file="${env}.properties" />
 	<sub-flow name="createloantwqasubflowSub_Flow" doc:id="526d1a57-1b68-4c44-9735-34ae2cd55825" >
-		<http:request method="POST" doc:name="Request" doc:id="c8f591db-c7f2-4aa5-93b0-e21364915194" config-ref="HTTP_Request_configuration" path="/api/token" target="hmsiToken"/>
-		<logger level="INFO" doc:name="Logger" doc:id="8dec9d4c-426b-485b-a3d6-ceb17dace9eb" message="#[vars.hmsiToken]"/>
-		<java:new constructor="encryptedpayload()" doc:name="New" doc:id="b63a3267-f524-4315-9380-18e343eb8cd4" class="encryptedpayload" target="encryptedText"/>
-		<java:invoke-static doc:name="Invoke static" doc:id="74c9d7bc-6e62-43a1-8058-05bdd7edb2d0" target="encryptedPayload" class="encryptedpayload" method="encrypt(java.lang.String,java.lang.String,java.lang.String)">
+		<logger level="INFO" doc:name="Entry Logger" doc:id="32cc07b1-aca6-4845-b39f-7cfde22cce9f" message="createloantwqasubflowSub_Flow-entry-logger"/>
+		<http:request method="POST" doc:name="Token API Request" doc:id="c8f591db-c7f2-4aa5-93b0-e21364915194" config-ref="HTTP_Request_configuration" path="/api/token" target="hmsiToken"/>
+		<logger level="INFO" doc:name="Token Logger" doc:id="8dec9d4c-426b-485b-a3d6-ceb17dace9eb" message="#[vars.hmsiToken]"/>
+		<java:new constructor="encryptedpayload()" doc:name="Encypted New" doc:id="b63a3267-f524-4315-9380-18e343eb8cd4" class="encryptedpayload" target="encryptedText"/>
+		<java:invoke-static doc:name="Encrypted Invoke static" doc:id="74c9d7bc-6e62-43a1-8058-05bdd7edb2d0" target="encryptedPayload" class="encryptedpayload" method="encrypt(java.lang.String,java.lang.String,java.lang.String)">
 			<java:args ><![CDATA[#[%dw 2.0
 output application/java
 ---
 {
 data : payload,
-secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
-iv: "1LLCyESRssvXXiX1"
+secretKey : p('hmsi.secretKey'),
+iv: p('hmsi.iv')
 
 }]]]></java:args>
 		</java:invoke-static>
-		<logger level="INFO" doc:name="Logger" doc:id="dc0c6255-9186-46c6-b3c5-25c98552d588" message="#[vars.encryptedPayload]"/>
-		<http:request method="POST" doc:name="Create Loan Request" doc:id="895046d9-30b7-44df-8586-a97c223eda00" config-ref="HTTP_Request_configuration1" path="/sfdc-inbound/inbound" target="encryptedPayload">
+		<logger level="INFO" doc:name="Encrypted Value Logger" doc:id="dc0c6255-9186-46c6-b3c5-25c98552d588" message="#[vars.encryptedPayload]"/>
+		<http:request method="POST" doc:name="Create Loan Request" doc:id="895046d9-30b7-44df-8586-a97c223eda00" config-ref="HTTP_Request_configuration1" path="/sfdc-inbound/inbound" target="encryptedPayload" responseTimeout="300000">
 			<http:body ><![CDATA[#[vars.encryptedPayload]]]></http:body>
 			<http:headers ><![CDATA[#[output application/java
 ---
 {
-	"source" : "hondatw",
-	"user_name" : "cflintegration",
-	"environment" : "VHUAT",
-	"Content-Type" : "application/octet-stream",
-	"password" : "sdfvklj40934tsdlvjk309sd",
-	"svc_name" : "CREATELOAN",
+	"source" : p('hmsi.source'),
+	"user_name" : p('hmsi.user_name'),
+	"environment" : p('hmsi.environment'),
+	"Content-Type" : p('hmsi.Content'),
+	"password" : p('hmsi.password'),
+	"svc_name" : p('hmsi.svc_name'),
 	"authorization" : "Bearer " ++ (vars.hmsiToken.access_token)
 }]]]></http:headers>
 		</http:request>
-		<logger level="INFO" doc:name="Logger" doc:id="ecf95b18-ec63-49ab-a0be-2397ae824dff" message="#[vars.encryptedPayload]"/>
-		<java:new constructor="decryptedpayload()" doc:name="New" doc:id="223e3116-44be-4b8a-846b-ea95d398056c" class="decryptedpayload"/>
-		<java:invoke-static doc:name="Invoke static" doc:id="7526eb33-84ca-4bb7-9eca-f16894ca034f" class="decryptedpayload" method="decrypt(java.lang.String,java.lang.String,java.lang.String)" target="decryptedpayload">
+		<logger level="INFO" doc:name="Encrypted Create Loan Response Payload Logger" doc:id="ecf95b18-ec63-49ab-a0be-2397ae824dff" message="#[vars.encryptedPayload]"/>
+		<java:new constructor="decryptedpayload()" doc:name="Decrypted New" doc:id="223e3116-44be-4b8a-846b-ea95d398056c" class="decryptedpayload"/>
+		<java:invoke-static doc:name="Decrypted Invoke static" doc:id="7526eb33-84ca-4bb7-9eca-f16894ca034f" class="decryptedpayload" method="decrypt(java.lang.String,java.lang.String,java.lang.String)" target="decryptedpayload">
 			<java:args ><![CDATA[#[%dw 2.0
 output application/java
 ---
 {
 encryptedData : vars.encryptedPayload,
-secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
-iv: "1LLCyESRssvXXiX1"
+secretKey : p('hmsi.secretKey'),
+iv: p('hmsi.iv')
 
 }]]]></java:args>
 		</java:invoke-static>
-		<logger level="INFO" doc:name="Logger" doc:id="d5a7dfa7-fe4f-449b-94a6-5f329e983da7" message="#[payload]"/>
-		<ee:transform doc:name="Transform Message" doc:id="a7fa7767-da10-4caa-a385-2e98d77016c8" >
+		<ee:transform doc:name="Decrypted Response Transform Message" doc:id="a7fa7767-da10-4caa-a385-2e98d77016c8" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -64,5 +66,7 @@ output application/json
 read(vars.decryptedpayload, "application/json")]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Final Response Logger" doc:id="d5a7dfa7-fe4f-449b-94a6-5f329e983da7" message="#[payload]" />
+		<logger level="INFO" doc:name="Exit Logger" doc:id="9eabb2e7-8392-4f80-a38b-037300fb934e" message="createloantwqasubflowSub_Flow-exit-logger"/>
 	</sub-flow>
 </mule>
