@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
     <http:listener-config name="getebclimitapi-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
+        <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
     <apikit:config name="getebclimitapi-config" api="resource::74f75fd1-79a0-4954-94c9-4f8d1b2e7e06:getebclimitapi:1.0.8:raml:zip:getebclimitapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="6b152a8e-6d42-45d5-9cbf-b2919353eb54">
@@ -10,7 +10,9 @@
     <http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="9e9c6735-f38a-4d24-9b9d-079172d712ce">
         <http:request-connection protocol="HTTPS" host="tokenhmsiapi-kfx0hw.5sc6y6-3.usa-e2.cloudhub.io" />
     </http:request-config>
-    <flow name="getebclimitapi-main">
+    <global-property doc:name="Global Property" doc:id="6f00f493-88b5-43f5-b029-c3fe03abf55e" name="env" value="config" />
+	<configuration-properties doc:name="Configuration properties" doc:id="6595e154-42c1-42eb-b02c-9db39c5b9598" file="${env}.properties" />
+	<flow name="getebclimitapi-main">
         <http:listener config-ref="getebclimitapi-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
