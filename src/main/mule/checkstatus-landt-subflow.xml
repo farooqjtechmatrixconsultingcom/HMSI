@@ -17,8 +17,8 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 output application/java
 ---
 {
-  key: "i*NaSNj_rxkPAH,#B^Caz?CSy@J#o+Hl1hNvXYXbu=mg9|L-@Lv:*=:58b8*J-v\$",
-  salt: "1fh,d&pgH8}Sxm><,^+d>4%4O^QR]G35",
+  key: p('hmsi.key'),
+  salt: p('hmsi.salt'),
   unencryptedString: payload
 }]]]></java:args>
 		</java:invoke-static>
@@ -38,10 +38,10 @@ output application/json
 			<http:headers ><![CDATA[#[output application/java
 ---
 {
-	"Partner_Name" : "TWEAG_OEMHMSI",
-	"Client_Secret_Key" : "wr5otyi0kl563ZGXF1VMDTWVZ4MYALTMD9780uzd6upxuiwLXCG6SS",
-	"Content-Type" : "application/json",
-	"Client_Id" : "O7FGAj1px2-j91paXCULN-LIPYZbbh5i-ft8jzXPPOJ"
+	"Partner_Name" : p('hmsi.Partner_Name'),
+	"Client_Secret_Key" : p('hmsi.Client_Secret_Key'),
+	"Content-Type" : p('hmsi.Content'),
+	"Client_Id" : p('hmsi.Client_Id')
 }]]]></http:headers>
 		</http:request>
 		<ee:transform doc:name="Response Transform Message" doc:id="b6929a1e-c88d-4e1b-b195-d72bd2d98acc" >
@@ -61,8 +61,8 @@ encryptedValue.body ]]></ee:set-payload>
 output application/java
 ---
 {
-  key: "i*NaSNj_rxkPAH,#B^Caz?CSy@J#o+Hl1hNvXYXbu=mg9|L-@Lv:*=:58b8*J-v\$",
-  salt: "1fh,d&pgH8}Sxm><,^+d>4%4O^QR]G35",
+  key: p('hmsi.key'),
+  salt: p('hmsi.salt'),
   encryptedString: payload
 }]]]></java:args>
 		</java:invoke-static>
