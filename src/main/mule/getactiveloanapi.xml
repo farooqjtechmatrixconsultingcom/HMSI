@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
     <http:listener-config name="getactiveloanapi-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
+        <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
     <apikit:config name="getactiveloanapi-config" api="resource::74f75fd1-79a0-4954-94c9-4f8d1b2e7e06:getactiveloanapi:1.0.7:raml:zip:getactiveloanapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2aa2532f-c05c-42a3-83e2-067b15247921">
@@ -10,7 +10,9 @@
     <http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="11141bc6-0020-435d-b331-616637bb2325">
         <http:request-connection protocol="HTTPS" host="apiext.uat.idfcfirstbank.com"/>
     </http:request-config>
-    <flow name="getactiveloanapi-main">
+    <global-property doc:name="Global Property" doc:id="0f1da08c-db49-4c38-892e-f0f07c44e4c2" name="env" value="config" />
+	<configuration-properties doc:name="Configuration properties" doc:id="5632bb3d-c0c8-4bc4-b131-0833976d5609" file="${env}.properties" />
+	<flow name="getactiveloanapi-main">
         <http:listener config-ref="getactiveloanapi-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
