@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
     <http:listener-config name="passgenerateleaddatatolos-landt-api-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
+        <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
     <apikit:config name="passgenerateleaddatatolos-landt-api-config" api="resource::12011993-977a-49e8-94b6-9869ac8c3369:passgenerateleaddatatolos-landt-api:1.0.1:raml:zip:passgenerateleaddatatolos-landt-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <flow name="passgenerateleaddatatolos-landt-api-main">
+    <global-property doc:name="Global Property" doc:id="ccd13eac-9ceb-41c2-ba8e-fdd4bb3a12e9" name="env" value="config" />
+	<configuration-properties doc:name="Configuration properties" doc:id="a3326e30-3d4f-4ce7-9f5b-602671f3dc88" file="${env}.properties" />
+	<flow name="passgenerateleaddatatolos-landt-api-main">
         <http:listener config-ref="passgenerateleaddatatolos-landt-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
