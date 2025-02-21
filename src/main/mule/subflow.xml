@@ -15,8 +15,11 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
 	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="8f80389c-3bd4-4359-b6ea-e3fdd04f579d" >
 		<http:request-connection protocol="HTTPS" host="apiext.uat.idfcfirstbank.com" />
 	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="c8222be0-04bd-45dd-ae1d-4de70e771c92" file="${env}.properties" />
+	<global-property doc:name="Global Property" doc:id="7cb3a398-87c8-48ed-b3fd-1dc4bdb3b4f8" name="env" value="config" />
 	<sub-flow name="subflow" doc:id="cda845d5-68d3-48cd-a354-35c498977a36">
-        <http:request method="POST" doc:name="tokenAPI Request" doc:id="22fa75b3-ffde-49c0-84a0-815dab0ab267" config-ref="HTTP_Request_configuration" path="/api/token" target="hmsiToken" />
+        <logger level="INFO" doc:name="Entry Logger" doc:id="66423a2a-b9cc-412c-9399-f20e9734d730" message="subflow-Entry-Logger"/>
+		<http:request method="POST" doc:name="tokenAPI Request" doc:id="22fa75b3-ffde-49c0-84a0-815dab0ab267" config-ref="HTTP_Request_configuration" path="/api/token" target="hmsiToken" />
         <logger level="INFO" doc:name="Logger" doc:id="9173ede7-b549-4595-a52e-bd8df8fdb4fb" message="#[vars.hmsiToken]" />
 		<java:new doc:name="New" doc:id="956f4f15-38d3-4150-a407-fb7a2eca9798" class="encodepayload" constructor="encodepayload()" target="encryptedText"/>
 		<java:invoke-static doc:name="Invoke static" doc:id="f215e96d-5731-4a6c-b209-b5c44d917534" class="encodepayload" method="encrypt(java.lang.String,java.lang.String,java.lang.String)" target="encryptedPayload">
@@ -25,8 +28,8 @@ output application/java
 ---
 {
 data : payload,
-secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
-iv: "1LLCyESRssvXXiX1"
+secretKey : p('hmsi.secretKey'),
+iv: p('hmsi.iv')
 
 }]]]></java:args>
 		</java:invoke-static>
@@ -36,27 +39,28 @@ iv: "1LLCyESRssvXXiX1"
             <http:headers><![CDATA[#[output application/java
 ---
 {
-	"source" : "hondatw",
-	"correlationId" : "71bc-c4e5-6017-9d55-7d5172",
-	"environment" : "VHUAT",
-	"Content-Type" : "application/octet-stream",
-	"svc_name" : "customercancel",
+	"source" : p('hmsi.source'),
+	"user_name" : p('hmsi.user_name'),
+	"environment" : p('hmsi.environment'),
+	"Content-Type" : p('hmsi.Content'),
+	"password" : p('hmsi.password'),
+	"svc_name" : p('hmsi.svc_name'),
 	"authorization" : "Bearer " ++ (vars.hmsiToken.access_token)
 }]]]></http:headers>
         </http:request>
-        <java:new constructor="decodepayload()" doc:name="New" doc:id="1ff1ee6f-d5f5-4837-8c54-54d4ad99a19a" class="decodepayload"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f549499c-5794-4d9e-9a63-c3c2a1865d75" message="#[payload]"/>
+		<java:new constructor="decodepayload()" doc:name="New" doc:id="1ff1ee6f-d5f5-4837-8c54-54d4ad99a19a" class="decodepayload"/>
 		<java:invoke-static doc:name="Invoke static" doc:id="b75f47f3-4cbf-4357-9cd3-30fe5bc25281" class="decodepayload" target="decryptedPayload" method="decrypt(java.lang.String,java.lang.String,java.lang.String)">
 			<java:args ><![CDATA[#[%dw 2.0
 output application/java
 ---
 {
 encryptedData : vars.encryptedPayload,
-secretKey : "VWh0anJCZWhxWDFNYnNKQXNObUMwZz09",
-iv: "1LLCyESRssvXXiX1"
+secretKey : p('hmsi.secretKey'),
+iv: p('hmsi.iv')
 
 }]]]></java:args>
 		</java:invoke-static>
-        <logger level="INFO" doc:name="Logger" doc:id="2174ec28-aad7-486b-bf8f-ee14e65687b4" message="#[payload]" />
 		<ee:transform doc:name="Transform Message" doc:id="07de349c-9ea0-4373-8576-bc21820489df" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -65,5 +69,7 @@ output application/json
 read(vars.decryptedPayload, "application/json")]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-    </sub-flow>
+		<logger level="INFO" doc:name="Entry-Logger" doc:id="87c22fd1-41b5-4133-9b14-019b7440e917" message="subflow-Exit-Logger"/>
+    
+</sub-flow>
 </mule>
